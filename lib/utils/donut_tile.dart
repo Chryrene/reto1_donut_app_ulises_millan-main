@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../utils/cart.dart';
 
-class DonutTile extends StatelessWidget {
+class DonutTile extends StatefulWidget {
   final String donutFlavor;
   final String donutPrice;
   final dynamic donutColor;
   final String imageName;
 
-  final double borderRadius = 24;
-
   const DonutTile({
-    super.key,
+    Key? key,
     required this.donutFlavor,
     required this.donutPrice,
-    this.donutColor,
+    required this.donutColor,
     required this.imageName,
-  });
+  }) : super(key: key);
+
+  @override
+  _DonutTileState createState() => _DonutTileState();
+}
+
+class _DonutTileState extends State<DonutTile> {
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +29,8 @@ class DonutTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Container(
         decoration: BoxDecoration(
-          color: donutColor[50],
-          borderRadius: BorderRadius.circular(borderRadius),
+          color: widget.donutColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Stack(
           children: [
@@ -33,10 +40,10 @@ class DonutTile extends StatelessWidget {
               right: 0,
               child: Container(
                 decoration: BoxDecoration(
-                  color: donutColor[100],
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(borderRadius),
-                    bottomLeft: Radius.circular(borderRadius),
+                  color: widget.donutColor.withOpacity(0.2),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(24),
+                    bottomLeft: Radius.circular(24),
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(
@@ -44,16 +51,15 @@ class DonutTile extends StatelessWidget {
                   horizontal: 18,
                 ),
                 child: Text(
-                  '\$$donutPrice',
+                  '\$${widget.donutPrice}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: donutColor[800],
+                    color: widget.donutColor,
                   ),
                 ),
               ),
             ),
-            // Contenido centrado
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,13 +70,13 @@ class DonutTile extends StatelessWidget {
                     horizontal: 40,
                     vertical: 12,
                   ),
-                  child: Image.asset(imageName),
+                  child: Image.asset(widget.imageName),
                 ),
                 // Texto del sabor del donut
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
-                    donutFlavor,
+                    widget.donutFlavor,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -79,8 +85,7 @@ class DonutTile extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 4), // Espacio entre los textos
-                // Texto adicional "Dunkin's"
+                const SizedBox(height: 4),
                 const Text(
                   "Dunkin's",
                   style: TextStyle(
@@ -89,32 +94,47 @@ class DonutTile extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10), // Espacio entre texto y botones
-
-                // Row con botón de favorito y "+" icono
+                const SizedBox(height: 10),
+                // Botones de favorito y agregar al carrito
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Botón de favorito (corazón)
+                      // Botón de favorito
                       IconButton(
                         onPressed: () {
-                          // Acción del botón de favorito
+                          setState(() {
+                            isFavorite = !isFavorite;
+                          });
                         },
-                        icon: const Icon(Icons.favorite_border),
-                        color: Colors.pink[400],
-                      ),
-                      // Ícono "+"
-                      GestureDetector(
-                        onTap: () {
-                          // Acción del botón "+"
-                        },
-                        child: Icon(
-                          Icons.add, // Ícono de "+"
-                          size: 30, // Tamaño del ícono
-                          color: Colors.grey[800],
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: Colors.red[400],
                         ),
+                      ),
+                      // Botón de agregar al carrito
+                      Consumer<Cart>(
+                        builder: (context, cart, child) {
+                          return IconButton(
+                            icon: const Icon(
+                              Icons.add,
+                              size: 30,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              cart.addItem(widget.donutFlavor,
+                                  double.parse(widget.donutPrice));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      '${widget.donutFlavor} added to cart'),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
