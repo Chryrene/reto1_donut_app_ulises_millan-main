@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: Icon(Icons.menu, color: Colors.grey[800], size: 36),
               onPressed: () {
-                print('Botón de menú');
               },
             ),
           ),
@@ -44,7 +43,6 @@ class _HomePageState extends State<HomePage> {
               child: IconButton(
                 icon: Icon(Icons.person, color: Colors.grey[800], size: 36),
                 onPressed: () {
-                  print('Yeah pomel');
                 },
               ),
             ),
@@ -78,10 +76,10 @@ class _HomePageState extends State<HomePage> {
               child: TabBarView(
                 children: [
                   DonutTab(),
-                  const BurgerTab(),
-                  const SmoothieTab(),
-                  const PancakeTab(),
-                  const PizzaTab(),
+                  BurgerTab(),
+                  SmoothieTab(),
+                  PancakeTab(),
+                  PizzaTab(),
                 ],
               ),
             ),

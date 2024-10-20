@@ -98,13 +98,16 @@ class DonutTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Botón de favorito (corazón)
-                      IconButton(
-                        onPressed: () {
-                          // Acción del botón de favorito
-                        },
-                        icon: const Icon(Icons.favorite_border),
-                        color: Colors.pink[400],
-                      ),
+// Ícono de favorito
+                IconButton(
+                  onPressed: () {
+                  // Acción para marcar como favorito
+                  },
+                  icon: Icon(
+                      Icons.favorite, // Ícono relleno
+                      color: Colors.red[400], // Color del borde y del relleno
+                    ),
+                    ),
                       // Ícono "+"
                       GestureDetector(
                         onTap: () {
